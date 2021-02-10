@@ -1,0 +1,44 @@
+name: Deploy Application
+
+on:
+  push:
+    branches: [ deployment ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Define environment variables
+      run: |
+        echo $(date +%s) > VERSION
+    - name: Replace environment variables
+      env:
+        DOCKER_HUB_ADDRESS: ${{ secrets.DOCKER_HUB_ADDRESS }}
+      run: |
+        export VERSION=$(cat VERSION)
+        envsubst '${VERSION} ${DOCKER_HUB_ADDRESS} ' <Deployment/deployment_template.yaml > Deployment/deployment.yaml
+    - name: Login services
+      env:
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      run: |
+        docker login --username mazzine -p $DOCKER_TOKEN
+    - name: Build the Docker image
+      env:
+        DOCKER_HUB_ADDRESS: ${{ secrets.DOCKER_HUB_ADDRESS }}
+      run: |
+        docker build . --tag $DOCKER_HUB_ADDRESS:audiotranscriberapi$(cat VERSION)
+    - name: Push the Docker image
+      env:
+        DOCKER_HUB_ADDRESS: ${{ secrets.DOCKER_HUB_ADDRESS }}
+      run: |
+        docker push $DOCKER_HUB_ADDRESS:audiotranscriberapi$(cat VERSION)
+    - uses: danielr1996/kubectl-action@1.0.0
+      name: Deploy
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+        # With simple Blue/Green Deployment
+        args: apply -f Deployment/deployment.yaml -n projveritas  && kubectl rollout status deployment/audiotranscriberapi-v$(cat VERSION) -n projveritas && kubectl delete deployment --selector 'app==audiotranscriberapi,version!=v'$(cat VERSION) -n projveritas
