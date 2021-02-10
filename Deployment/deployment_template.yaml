@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiotranscriberapi-v${VERSION}
+  labels:
+    app: audiotranscriberapi
+    version: v${VERSION}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: audiotranscriberapi
+  template:
+    metadata:
+      labels:
+        app: audiotranscriberapi
+    spec:
+      containers:
+      - name: audiotranscriberapi
+        image: ${DOCKER_HUB_ADDRESS}:audiotranscriberapi${VERSION}
+        ports:
+        - containerPort: 3800
+      imagePullSecrets:
+      - name: regcred

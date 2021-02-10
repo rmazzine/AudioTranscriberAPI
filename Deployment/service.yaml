@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: audiotranscriberapi
+spec:
+  selector:
+    app: audiotranscriberapi
+  ports:
+    - port: 3800
