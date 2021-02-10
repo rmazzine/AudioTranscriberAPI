@@ -28,6 +28,18 @@ Instead running a flask server, use gunicorn WSGI HTTP server
 gunicorn -w 1 --bind 0.0.0.0:3800 wsgi
 ```
 
+## Create docker image
+To create a docker image, build it with:
+
+```commandline
+docker build -t audiotranscriberapi .
+```
+
+Then run it port-forwarding the required port
+```commandline
+docker run -p 3800:3800 audiotranscriberapi
+```
+
 ## How to use
 
 It's recommended to use an API tool like [Postman](https://www.postman.com/downloads/).
