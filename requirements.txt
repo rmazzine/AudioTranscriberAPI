@@ -1,0 +1,4 @@
+Flask==1.1.2
+Flask-RESTful==0.3.8
+vosk==0.3.18
+librosa==0.8.0
