@@ -4,21 +4,28 @@ This is a simple flask API that accepts a ogg base64 data (although it may be co
 
 The current code is with the Portuguese-BR model, however, it can be easily changed to other vosk model (https://alphacephei.com/vosk/models).
 
-## How to run
+## How to run (development env)
 
 Install packages
-```shell script
+```commandline
 pip install -r requirements
 ```
 
 Go to flask API folder
-```shell script
+```commandline
 cd ./flaskapp
 ```
 
 Start flask server (http://localhost:5000)
-```shell script
+```commandline
 flask run
+```
+
+## How to run (production env)
+
+Instead running a flask server, use gunicorn WSGI HTTP server
+```commandline
+gunicorn -w 1 --bind 0.0.0.0:3800 wsgi
 ```
 
 ## How to use
