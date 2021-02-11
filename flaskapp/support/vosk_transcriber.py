@@ -14,11 +14,11 @@ def transcribe_wav(filepath):
 
     transcription = ''
     while True:
-        data = wf.readframes(100)
+        data = wf.readframes(4000)
         if len(data) == 0:
             break
         if rec.AcceptWaveform(data):
-            transcription += str(eval(rec.Result())['text'])
+            transcription += str(eval(rec.Result())['text'])+' '
 
     transcription += str(eval(rec.FinalResult())['text'])
 
